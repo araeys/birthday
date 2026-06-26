@@ -5288,3 +5288,163 @@ select {
   transform: translateY(-8px) scale(1.05) !important;
   filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 30px rgba(255, 183, 213, 0.3)) !important;
 }
+
+
+/* =====================================================================
+   MASSIVE REDESIGN V3: PREMIUM TYPOGRAPHY, BUTTONS, INTRO & CLAW MACHINE
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,500;0,800;1,500&display=swap');
+
+:root {
+  --sans: "Outfit", system-ui, sans-serif !important;
+  --serif: "Playfair Display", Georgia, serif !important;
+  --display: "Playfair Display", Georgia, serif !important;
+}
+
+body {
+  font-family: var(--sans) !important;
+}
+
+h1, h2, h3, .section-kicker, .hero-badge {
+  font-family: var(--serif) !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* 1. EVERY BUTTON GETS LIQUID GLOW & 3D MAGNETIC HOVER */
+button, .primary-cta, .ghost-cta, .reply-cta {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, border-color 0.4s ease, filter 0.4s ease, background 0.4s ease !important;
+  transform-style: preserve-3d;
+}
+
+@keyframes liquidSweep {
+  0% { transform: translateX(-150%) skewX(-25deg); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateX(250%) skewX(-25deg); opacity: 0; }
+}
+
+button::before, .primary-cta::before, .ghost-cta::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -50%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-25deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+button:hover::before, .primary-cta:hover::before, .ghost-cta:hover::before {
+  animation: liquidSweep 1.2s cubic-bezier(0.2, 1.2, 0.3, 1) infinite !important;
+}
+
+button:hover, .primary-cta:hover, .ghost-cta:hover {
+  transform: translateY(-5px) scale(1.06) !important;
+  box-shadow: 0 25px 60px rgba(255, 78, 157, 0.5), 0 0 35px rgba(255, 177, 216, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
+  filter: brightness(1.15) !important;
+}
+
+button:active, .primary-cta:active, .ghost-cta:active {
+  transform: translateY(2px) scale(0.95) !important;
+  transition: transform 0.1s ease !important;
+}
+
+
+/* 2. CLAW MACHINE MASSIVE UPGRADE */
+@keyframes neonArcadePulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 117, 179, 0.3), inset 0 0 10px rgba(255, 183, 213, 0.1); border-color: rgba(255, 117, 179, 0.4); }
+  50% { box-shadow: 0 0 50px rgba(255, 117, 179, 0.8), inset 0 0 30px rgba(255, 183, 213, 0.5); border-color: rgba(255, 183, 213, 1); }
+}
+
+.claw-machine {
+  animation: neonArcadePulse 2s ease-in-out infinite !important;
+  backdrop-filter: blur(25px) saturate(1.5) !important;
+  border-radius: 40px !important;
+}
+
+.claw-unit {
+  transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s ease !important;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 183, 213, 0.8)) !important;
+}
+
+.claw-controls button {
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.claw-main-button {
+  background: linear-gradient(135deg, #ff4d94, #b92f72) !important;
+  border: 3px solid #ff9bc9 !important;
+  animation: gentleFloatCard 3s ease-in-out infinite !important;
+}
+
+.claw-main-button:hover {
+  transform: translateY(-8px) scale(1.1) rotate(2deg) !important;
+  box-shadow: 0 0 60px rgba(255, 77, 148, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.6) !important;
+}
+
+.plush-prize-card {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.plush-prize-card:hover {
+  transform: translateY(-15px) scale(1.15) rotate(-5deg) !important;
+  z-index: 20 !important;
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.5)) !important;
+}
+
+/* 3. INTRO / GIFT BOX REDESIGN */
+@keyframes giftAnticipation {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(0.95) rotate(-3deg); }
+  50% { transform: scale(1.05) rotate(3deg); filter: brightness(1.2); }
+  75% { transform: scale(0.9) rotate(-4deg); }
+  100% { transform: scale(1.1) rotate(0deg); }
+}
+
+@keyframes dramaticFlash {
+  0% { background: transparent; }
+  50% { background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,183,213,0.8) 40%, transparent 80%); }
+  100% { background: transparent; }
+}
+
+@keyframes headExplosivePop {
+  0% { transform: translate(-50%, 46px) scale(0) rotate(-30deg); opacity: 0; }
+  60% { transform: translate(-50%, -150px) scale(1.3) rotate(15deg); opacity: 1; }
+  80% { transform: translate(-50%, -110px) scale(0.9) rotate(-5deg); }
+  100% { transform: translate(-50%, -138px) scale(1.1) rotate(4deg); opacity: 1; filter: drop-shadow(0 40px 60px rgba(255,117,179,0.6)); }
+}
+
+.gift-gate h1 {
+  font-family: var(--serif) !important;
+  text-shadow: 0 0 50px rgba(255, 183, 213, 0.6), 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+}
+
+.gift-box {
+  transition: transform 0.4s ease, filter 0.4s ease !important;
+}
+
+.gift-box:hover {
+  transform: translateY(-15px) scale(1.1) !important;
+  filter: drop-shadow(0 50px 70px rgba(0,0,0,0.6)) drop-shadow(0 0 50px rgba(255,117,179,0.4)) !important;
+}
+
+.gift-box.is-opening {
+  animation: giftAnticipation 0.6s ease-in-out !important;
+}
+
+.gift-box.is-opening::before {
+  content: "";
+  position: fixed;
+  inset: -200%;
+  z-index: -1;
+  animation: dramaticFlash 0.8s ease-out !important;
+  pointer-events: none;
+}
+
+.gift-box.is-opening .head-pop {
+  animation: headExplosivePop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
