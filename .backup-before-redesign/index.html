@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#120812">
+  <meta name="description" content="An interactive birthday gift for Cinta.">
+  <title>For Cinta - A Little Birthday Surprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Dancing+Script:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=verify-flow-1">
+  <link rel="stylesheet" href="./final-overrides.css?v=proposal-v17">
+</head>
+<body class="is-intro-locked is-passcode-locked">
+  <div class="mobile-preload-screen" id="mobilePreloadScreen" aria-live="polite" hidden>
+    <div class="mobile-preload-card">
+      <span class="mobile-preload-orb" aria-hidden="true"></span>
+      <p class="mobile-preload-kicker">mobile setup</p>
+      <h1>Loading your little gift...</h1>
+      <p class="mobile-preload-copy" id="mobilePreloadText">Preparing assets biar smooth di HP.</p>
+      <div class="mobile-preload-bar" aria-hidden="true"><span id="mobilePreloadBar"></span></div>
+      <p class="mobile-preload-percent" id="mobilePreloadPercent">0%</p>
+    </div>
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+  <canvas id="petalCanvas" class="petal-canvas" aria-hidden="true"></canvas>
+  <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
+  <audio id="birthdayAudio" src="./assets/happy-birthday.mp3" preload="none" loop></audio>
+  <audio id="giftAudio" src="./assets/lets-go-birthday-girl.mp3" preload="metadata"></audio>
+  <audio id="proposalMomentAudio" preload="none"></audio>
+
+  <section class="intro-gate" id="introGate" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+    <button class="intro-skip" id="introSkip" type="button">skip intro</button>
+    <div class="intro-gate-bg" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="intro-sequence-card">
+      <h1 id="introTitle" class="sr-only">A tiny note for Cinta</h1>
+      <p class="intro-type-line" id="introTypeLine" aria-live="polite"></p>
+      <button class="primary-cta intro-continue" id="introContinue" type="button" hidden>continue</button>
+    </div>
+  </section>
+
+  <section class="passcode-gate" id="passcodeGate" role="dialog" aria-modal="true" aria-labelledby="passcodeTitle">
+    <div class="passcode-bg" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="passcode-card">
+      <div class="passcode-kicker">private birthday access</div>
+      <h1 id="passcodeTitle">Enter Cinta's secret date.</h1>
+      <p>One tiny code before the surprise opens. Take your time, something soft is loading behind this.</p>
+      <div class="passcode-display" id="passcodeDisplay" aria-live="polite" aria-label="Passcode input">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="passcode-pad" aria-label="Number keypad">
+        <button type="button" data-pass-digit="1">1</button>
+        <button type="button" data-pass-digit="2">2</button>
+        <button type="button" data-pass-digit="3">3</button>
+        <button type="button" data-pass-digit="4">4</button>
+        <button type="button" data-pass-digit="5">5</button>
+        <button type="button" data-pass-digit="6">6</button>
+        <button type="button" data-pass-digit="7">7</button>
+        <button type="button" data-pass-digit="8">8</button>
+        <button type="button" data-pass-digit="9">9</button>
+        <button type="button" class="passcode-tool" data-pass-action="clear">clear</button>
+        <button type="button" data-pass-digit="0">0</button>
+        <button type="button" class="passcode-tool" data-pass-action="back">delete</button>
+      </div>
+      <p class="passcode-status" id="passcodeStatus">hint: birthday date, but tiny.</p>
+      <div class="passcode-loader" aria-hidden="true"><span></span></div>
+    </div>
+  </section>
+
+  <div id="giftGate" class="gift-gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <div class="gate-ambient" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <button class="gift-box" id="openGift" type="button" aria-describedby="gateCopy">
+      <span class="gift-stage" aria-hidden="true">
+        <span class="gift-orbit">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <img class="gift-asset gift-asset-closed" src="./assets/gift-box-utuh.png" alt="" loading="eager" decoding="async">
+        <span class="gift-opened-stack">
+          <img class="gift-asset gift-asset-opened" src="./assets/box-opened.png" alt="" loading="lazy" decoding="async">
+          <img class="gift-asset gift-asset-lid" src="./assets/tutup-box.png" alt="" loading="lazy" decoding="async">
+        </span>
+        <span class="head-pop">
+          <img data-src="./assets/cinta-gift.gif" alt="" loading="lazy" decoding="async" fetchpriority="low">
+          <span class="gift-head-glow"></span>
+        </span>
+      </span>
+    </button>
+    <div class="intro-popups" aria-label="Tiny intro notes">
+      <button type="button" data-pop="from Reyhan, but she can call him Rey">from Rey</button>
+      <button type="button" data-pop="Cinta Ayu Wulandari gets the premium birthday treatment">full name</button>
+      <button type="button" data-pop="the first DM still has its own section">first DM</button>
+      <button type="button" data-pop="tap around, there are tiny surprises everywhere">explore</button>
+    </div>
+    <p class="eyebrow">for Cinta · 16 July</p>
+    <h1 id="gateTitle">A Little Surprise</h1>
+    <p id="gateCopy">Made with love, pink light, and the first random DM I still remember.</p>
+    <p class="gate-signature">for Cinta Ayu Wulandari, from Rey</p>
+    <button class="bgm-toggle is-on" id="bgmToggle" type="button" aria-pressed="true">
+      <span>Backsound</span>
+      <strong>On</strong>
+      <small>tap to keep it quiet</small>
+    </button>
+    <button class="primary-cta" id="openGiftText" type="button">Open your gift</button>
+  </div>
+
+  <main id="experience" class="experience is-locked">
+    <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false">
+      <span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Play Happy Birthday</span>
+    </button>
+
+    <div class="vinyl-player" id="vinylPlayer" aria-label="Interactive vinyl player">
+      <div class="vinyl-record" aria-hidden="true">
+        <span></span>
+      </div>
+      <button class="tonearm" id="tonearm" type="button" aria-pressed="false" aria-label="Drag the tonearm to play music">
+        <span></span>
+      </button>
+      <p id="vinylStatus">drag needle to play</p>
+      <label class="track-picker" for="trackSelect">
+        <span>song</span>
+        <select id="trackSelect" aria-label="Choose background song">
+          <option value="happy-birthday">Happy Birthday</option>
+          <option value="drop-dead">Drop Dead - Olivia Rodrigo</option>
+        </select>
+      </label>
+    </div>
+
+    <section class="section timer-section" id="timer" data-reveal>
+      <div class="timer-dream-bg" aria-hidden="true">
+        <span class="timer-spotlight"></span>
+        <span class="timer-haze timer-haze-left"></span>
+        <span class="timer-haze timer-haze-right"></span>
+        <span class="timer-floor-glow"></span>
+        <span class="timer-orbital-arc"></span>
+      </div>
+      <div class="timer-particle-field" aria-hidden="true">
+        <span class="timer-petal p1"></span>
+        <span class="timer-petal p2"></span>
+        <span class="timer-petal p3"></span>
+        <span class="timer-petal p4"></span>
+        <span class="timer-petal p5"></span>
+        <span class="timer-heart-dot h1"></span>
+        <span class="timer-heart-dot h2"></span>
+        <span class="timer-spark s1"></span>
+        <span class="timer-spark s2"></span>
+        <span class="timer-spark s3"></span>
+      </div>
+      <div class="section-kicker">since 06 February 2026</div>
+      <span class="timer-time-charm" aria-hidden="true">our time</span>
+      <h2>How long since the first hello?</h2>
+      <p class="section-copy timer-love-copy">
+        Since February 6, 2026 - the day you changed everything.
+        <span>and every second has been worth it :)</span>
+      </p>
+      <div class="timer-grid" id="elapsedTimer" aria-live="polite">
+        <div class="time-tile"><strong data-unit="days">000</strong><span>days</span></div>
+        <div class="time-tile"><strong data-unit="hours">00</strong><span>hours</span></div>
+        <div class="time-tile"><strong data-unit="minutes">00</strong><span>minutes</span></div>
+        <div class="time-tile"><strong data-unit="seconds">00</strong><span>seconds</span></div>
+      </div>
+      <a class="timer-scroll-cta" href="#first-dm" aria-label="Scroll to keep exploring">there's more waiting for you</a>
+      <div class="timer-heart-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="ribbon-note">from a random DM to a favorite thought</div>
+    </section>
+
+    <section class="section dm-section" id="first-dm" data-reveal>
+      <div class="reference-petal-layer dm-petal-layer" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="phone-shell">
+        <div class="phone-top">
+          <span class="ig-back" aria-hidden="true">‹</span>
+          <img class="avatar-mini" src="./assets/cinta-profile.jpg" alt="Cinta profile">
+          <div>
+            <strong>cintaawlndr</strong>
+            <small>Active now</small>
+          </div>
+          <span class="status-dot"></span>
+          <div class="ig-dm-actions" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="ig-progress" aria-hidden="true"><span></span></div>
+        <div class="chat-stage chat-thread" id="chatStage">
+          <div class="chat-ambient" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="chat-date-stamp">6 February · 8:22 AM</div>
+          <div class="typing-row" data-chat-step="0"><small>Cinta is typing</small><span></span><span></span><span></span></div>
+          <div class="chat-bubble cinta" data-chat-step="1" data-reaction-label="Cinta's first move">
+            <p>hii ini random banget, but you have such a calm n beautiful vibe 😊 makasihh yaa sudah follback</p>
+            <div class="bubble-reactions" aria-label="React to Cinta's message">
+              <button type="button" data-reaction="♡">♡</button>
+              <button type="button" data-reaction="✨">✨</button>
+              <button type="button" data-reaction="😳">😳</button>
+            </div>
+          </div>
+          <div class="seen-row" data-chat-step="seen">seen</div>
+          <div class="chat-bubble me" data-chat-step="2" data-reaction-label="Rey's reply">
+            <p>hahaha, tysm! kinda feel flattered someone said that 😃 glad u like it!</p>
+            <img class="bubble-avatar rey-avatar" src="./assets/rey-profile.jpg" alt="Rey profile">
+            <div class="bubble-reactions" aria-label="React to Rey's reply">
+              <button type="button" data-reaction="💗">💗</button>
+              <button type="button" data-reaction="🌷">🌷</button>
+              <button type="button" data-reaction="🫶">🫶</button>
+            </div>
+          </div>
+        </div>
+        <div class="chat-actions" aria-label="Interactive chat reactions">
+          <button class="dm-replay-button" id="replayChat" type="button" data-chat-spark="replaying the first DM">Replay simulation</button>
+          <button type="button" data-chat-spark="saved this DM forever">save DM</button>
+          <button type="button" data-chat-spark="Rey is still flattered">make Rey blush</button>
+          <button type="button" data-chat-spark="tiny pink hearts sent">send hearts</button>
+        </div>
+      </div>
+      <div class="section-text">
+        <div class="section-kicker">the beginning</div>
+        <h2>The cutest plot twist started in DMs.</h2>
+        <p class="section-copy">No couple photos yet, no big dramatic meeting yet. Just a soft first message that somehow became the start of this whole little universe.</p>
+      </div>
+    </section>
+
+    <nav class="floating-feature-menu" id="feature-menu" aria-label="Feature shortcut menu">
+      <button class="feature-menu-toggle" id="featureMenuToggle" type="button" aria-expanded="false" aria-controls="featureMenuPanel">
+        <span class="feature-menu-toggle-icon" aria-hidden="true">&#10022;</span>
+        <strong>Menu</strong>
+      </button>
+      <div class="feature-menu-panel" id="featureMenuPanel">
+        <a href="#name-reveal" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C9 3 12 5 12 8c0-3 3-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span><strong>Birthday Glow</strong></a>
+        <a href="#lanyard" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M9 2v3"/><circle cx="9" cy="11" r="2"/><path d="M14 10h4M14 13h4M7 16.5h10"/></svg></span><strong>3D Lanyard</strong></a>
+        <a href="#celebrate" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span><strong>Little Reasons</strong></a>
+        <a href="#wishes" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 13.9 9 20 11l-6.1 2L12 19.5 10.1 13 4 11l6.1-2Z"/><path d="M19 4v3M20.5 5.5h-3"/></svg></span><strong>Glass Wishes</strong></a>
+        <a href="#mood-jar" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10"/><path d="M8 3v2.2a3 3 0 0 1-.7 1.9L6.4 8.2A4 4 0 0 0 5.5 11v6.5A3.5 3.5 0 0 0 9 21h6a3.5 3.5 0 0 0 3.5-3.5V11a4 4 0 0 0-.9-2.8l-.9-1.1a3 3 0 0 1-.7-1.9V3"/><path d="M12 12.5c1.2-1.4 3-.2 1.7 1.2L12 15.5l-1.7-1.8c-1.3-1.4.5-2.6 1.7-1.2Z"/></svg></span><strong>Mood Jar</strong></a>
+        <a href="#bloom" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="2.2"/><path d="M12 11.2c1.8 1.6 1.8 1.6 0 3.3-1.8-1.7-1.8-1.7 0-3.3ZM9.8 9C8 7.4 8 7.4 9.8 5.7c1.7 1.7 1.7 1.7 0 3.3ZM14.2 9c1.8-1.6 1.8-1.6 0-3.3-1.7 1.7-1.7 1.7 0 3.3Z"/><path d="M12 14.5V21"/><path d="M12 18c-1.5-1.5-3.5-1-4 0M12 19.5c1.5-1.2 3.2-.6 3.6.5"/></svg></span><strong>Bloom Rose</strong></a>
+        <a href="#gallery" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.4"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-4.2-4.2a2 2 0 0 0-2.8 0L4 21"/></svg></span><strong>Photo Garden</strong></a>
+        <a href="#bouquet" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.3"/><circle cx="7.2" cy="8.2" r="2.3"/><circle cx="16.8" cy="8.2" r="2.3"/><path d="M8 10 12 21M16 10 12 21M12 7.3V21"/><path d="M7 18h10"/></svg></span><strong>Bouquet</strong></a>
+        <a href="#pov" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><path d="M12 14.2c1.3-1.4 2.6-2.3 2.6-3.7A1.6 1.6 0 0 0 12 9.5a1.6 1.6 0 0 0-2.6 1c0 1.4 1.3 2.3 2.6 3.7Z"/></svg></span><strong>Rey's POV</strong></a>
+        <a href="#letter" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4.5" width="20" height="15" rx="2"/><path d="m3 6 7.6 6a2 2 0 0 0 2.8 0L21 6"/></svg></span><strong>Letter</strong></a>
+        <a href="#future" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 13.6 8.4 19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6Z"/><path d="M18.5 14.5 19 16.5 21 17l-2 .5-.5 2-.5-2-2-.5 2-.5Z"/></svg></span><strong>Future Notes</strong></a>
+        <a href="#scratch" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a2.5 2.5 0 0 1 0 5V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a2.5 2.5 0 0 1 0-5V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5.5v2M13 11v2M13 16.5v2"/></svg></span><strong>Secret Scratch</strong></a>
+        <a href="#fortune" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9Z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg></span><strong>Promise Chest</strong></a>
+        <a href="#claw-machine" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.4v5.6"/><path d="M21 16.5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2Z"/><path d="M7 14.5v-2M17 14.5v-2"/></svg></span><strong>Claw Machine</strong></a>
+        <a href="#candle" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7"/><path d="M4 16c1.2 0 1.2 1.2 2.4 1.2S7.6 16 8.8 16s1.2 1.2 2.4 1.2S12.4 16 13.6 16s1.2 1.2 2.4 1.2S17.2 16 18.4 16s1.2 1.2 1.6 1.2"/><path d="M2 21h20"/><path d="M8 8v3M12 8v3M16 8v3"/><path d="M8 4.5h.01M12 4.5h.01M16 4.5h.01"/></svg></span><strong>Birthday Cake</strong></a>
+        <a href="#certificate" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.6 7.5 22l4.5-2.6L16.5 22 15 13.6"/></svg></span><strong>Birthday Pass</strong></a>
+        <a href="#dateInvitation" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.2"/><path d="M3 9h18M8 2.5v3M16 2.5v3"/><path d="M12 18c1.4-1.3 2.7-2.1 2.7-3.5A1.7 1.7 0 0 0 12 13a1.7 1.7 0 0 0-2.7 1.5c0 1.4 1.3 2.2 2.7 3.5Z"/></svg></span><strong>Date Invite</strong></a>
+        <a href="#girlfriendProposal" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.5" r="5"/><path d="m8.5 9.7 1.8-3.2h3.4l1.8 3.2"/><path d="M12 6.5 10.3 4.5h3.4Z"/></svg></span><strong>Girlfriend?</strong></a>
+        <a href="#finale" data-feature-link><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3 12.4 7.2 16.5 8.6 12.4 10 11 14.2 9.6 10 5.5 8.6 9.6 7.2Z"/><path d="M17.5 13 18.4 15.6 21 16.5 18.4 17.4 17.5 20 16.6 17.4 14 16.5 16.6 15.6Z"/><path d="M5 14.5 5.6 16.4 7.5 17 5.6 17.6 5 19.5 4.4 17.6 2.5 17 4.4 16.4Z"/></svg></span><strong>Finale</strong></a>
+      </div>
+    </nav>
+
+    <section class="section hero-section" id="name-reveal" data-reveal>
+      <div class="reference-petal-layer birthday-petal-layer" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="birthday-clouds" aria-hidden="true">
+        <img class="birthday-cloud-asset" src="./assets/clouds.png" alt="" loading="lazy" decoding="async">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="hero-badge">birthday girl · 16 July</div>
+      <h2 class="birthday-title" id="birthdayTitle">Happy Birthday!</h2>
+      <p>for the girl who started with one random DM and somehow became my favorite thought.</p>
+      <p class="name-signature">Cinta Ayu Wulandari</p>
+      <div class="flip-line" aria-live="polite">
+        <span>you feel like</span>
+        <strong id="flipWord">soft</strong>
+      </div>
+      <div class="hero-ornaments" aria-hidden="true">
+        <i></i><i></i><i></i>
+      </div>
+      <div class="hero-light-ribbons" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="cute-stickers" aria-hidden="true">
+        <span class="sticker sparkle">&#10022;</span>
+        <span class="sticker bow">&#10023;</span>
+        <span class="sticker heart">&#9825;</span>
+        <span class="sticker letter">&#9993;</span>
+        <span class="sticker star">&#10022;</span>
+        <span class="sticker gift-mini">&#9671;</span>
+      </div>
+    </section>
+
+    <section class="section lanyard-section" id="lanyard" data-reveal>
+      <div class="section-text">
+        <div class="section-kicker">interactive pass</div>
+        <h2>A tiny birthday lanyard for Cinta.</h2>
+        <p class="section-copy">Drag or tilt the card. Later, this placeholder can become one of Cinta's favorite photos.</p>
+      </div>
+      <div class="lanyard-stage">
+        <div class="lanyard-card" id="lanyardCard" tabindex="0" role="button" aria-label="Interactive birthday lanyard card">
+          <div class="lanyard-string" id="lanyardString" aria-hidden="true">
+            <span></span>
+          </div>
+          <div class="card-layer layer-3" aria-hidden="true"></div>
+          <div class="card-layer layer-2" aria-hidden="true"></div>
+          <div class="card-layer layer-1" aria-hidden="true"></div>
+          <div class="card-face card-front">
+            <div class="lanyard-hole"></div>
+            <div class="photo-placeholder large lanyard-photo-frame">
+              <img class="lanyard-photo" src="./assets/cinta-lanyard.jpg" alt="Foto Cinta">
+              <span class="lanyard-photo-shine" aria-hidden="true"></span>
+            </div>
+            <h3>Cinta</h3>
+            <p>birthday pass</p>
+          </div>
+          <div class="card-face card-back">
+            <h3>valid forever</h3>
+            <p>for smiles, soft talks, and every little future memory.</p>
+            <span class="wax">♡</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section celebrate-section" id="celebrate" data-reveal>
+      <div class="section-kicker">what I celebrate about you</div>
+      <h2>Little reasons, big feelings.</h2>
+      <div class="expandable-grid" id="celebrateCards">
+        <article class="reason-card is-active">
+          <button type="button"><span>01</span>Your calm vibe</button>
+          <p>The first thing she noticed, and honestly, the thing that made the first message feel warm instead of random.</p>
+        </article>
+        <article class="reason-card">
+          <button type="button"><span>02</span>Your first move</button>
+          <p>That brave little DM deserves a whole section because it started all of this.</p>
+        </article>
+        <article class="reason-card">
+          <button type="button"><span>03</span>Your softness</button>
+          <p>The kind of softness that makes ordinary chats feel like tiny safe places.</p>
+        </article>
+        <article class="reason-card">
+          <button type="button"><span>04</span>Simply you</button>
+          <p>No over-explaining needed. Some people become special quietly, then all at once.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section wish-section" id="wishes" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">liquid glass wishes</div>
+          <h2>Tiny notes Cinta can open.</h2>
+        </div>
+        <p>Tap each glass capsule. The words flip softly, like little hidden birthday notes.</p>
+      </div>
+      <div class="wish-grid" id="wishGrid">
+        <button class="wish-capsule" type="button" data-front="a soft day" data-back="I hope your birthday feels gentle, pretty, and full of tiny reasons to smile.">
+          <span class="wish-glass" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="wish-face" data-wish-face>a soft day</span>
+          <span class="wish-orbit" aria-hidden="true"></span>
+        </button>
+        <button class="wish-capsule" type="button" data-front="brave heart" data-back="Thank you for making the first move. That little courage became my favorite beginning.">
+          <span class="wish-glass" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="wish-face" data-wish-face>brave heart</span>
+          <span class="wish-orbit" aria-hidden="true"></span>
+        </button>
+        <button class="wish-capsule" type="button" data-front="pretty future" data-back="One day these placeholders will turn into real memories, real photos, and real stories.">
+          <span class="wish-glass" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="wish-face" data-wish-face>pretty future</span>
+          <span class="wish-orbit" aria-hidden="true"></span>
+        </button>
+        <button class="wish-capsule" type="button" data-front="always Cinta" data-back="Today is about you: your softness, your vibe, your existence, and everything that makes you you.">
+          <span class="wish-glass" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="wish-face" data-wish-face>always Cinta</span>
+          <span class="wish-orbit" aria-hidden="true"></span>
+        </button>
+      </div>
+    </section>
+
+    <section class="section mood-jar-section" id="mood-jar" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">mood jar</div>
+          <h2>Ambil satu note kecil dari Rey.</h2>
+        </div>
+        <p>Tap toplesnya buat dapet compliment, joke, promise, atau reminder random. Kertasnya keluar satu-satu, kayak mood booster mini.</p>
+      </div>
+      <div class="mood-jar-stage">
+        <button class="mood-jar-button" id="moodJar" type="button" aria-controls="moodNoteCard" aria-label="Ambil random note dari Mood Jar">
+          <span class="jar-shadow" aria-hidden="true"></span>
+          <span class="jar-pedestal" aria-hidden="true"></span>
+          <span class="jar-glass-back" aria-hidden="true"></span>
+          <span class="jar-note-stack" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i>
+          </span>
+          <span class="jar-lid" aria-hidden="true"></span>
+          <span class="jar-neck" aria-hidden="true"></span>
+          <span class="jar-liquid" aria-hidden="true"></span>
+          <span class="jar-glass" aria-hidden="true"></span>
+          <span class="jar-bow" aria-hidden="true"></span>
+          <span class="jar-label" aria-hidden="true"><strong>mood.exe</strong><small>pull a note</small></span>
+          <span class="jar-heart h1" aria-hidden="true">♡</span>
+          <span class="jar-heart h2" aria-hidden="true">✦</span>
+          <span class="jar-heart h3" aria-hidden="true">♡</span>
+          <span class="jar-paper paper-a" aria-hidden="true"></span>
+          <span class="jar-paper paper-b" aria-hidden="true"></span>
+          <span class="jar-paper paper-c" aria-hidden="true"></span>
+          <span class="jar-paper paper-d" aria-hidden="true"></span>
+          <span class="jar-note-out" aria-hidden="true"></span>
+          <span class="jar-spark-ring" aria-hidden="true"></span>
+          <span class="jar-tap-hint">tap: tarik note baru</span>
+        </button>
+        <div class="mood-note-panel">
+          <div class="mood-note-card" id="moodNoteCard" aria-live="polite">
+            <span class="mood-note-type" id="moodNoteType">sealed note</span>
+            <p id="moodNoteText">Toplesnya masih penuh. Tap jar-nya, nanti satu note kecil keluar buat Cinta.</p>
+          </div>
+          <div class="mood-note-meta" aria-live="polite">
+            <span id="moodPullCount">0 notes pulled</span>
+            <span id="moodNoteMood">waiting for a tiny mood</span>
+          </div>
+          <button class="ghost-cta mood-again" id="moodJarAgain" type="button">Ambil note lain</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bloom-section" id="bloom" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">tap-to-bloom rose</div>
+          <h2>Mawar kecil yang mekar pelan-pelan.</h2>
+        </div>
+        <p>Scroll atau tap area ini. Setiap gerakan bikin kelopak mawarnya kebuka sedikit lagi.</p>
+      </div>
+      <div class="rose-lab" id="roseLab" aria-live="polite">
+        <div class="glass-dome" aria-hidden="true">
+          <span class="glass-shine"></span>
+        </div>
+        <div class="rose-plant" id="rosePlant" style="--bloom: 0">
+          <span class="rose-sparkle s1"></span>
+          <span class="rose-sparkle s2"></span>
+          <span class="rose-sparkle s3"></span>
+          <span class="stem"></span>
+          <span class="leaf left"></span>
+          <span class="leaf right"></span>
+          <span class="petal p1"></span>
+          <span class="petal p2"></span>
+          <span class="petal p3"></span>
+          <span class="petal p4"></span>
+          <span class="petal p5"></span>
+          <span class="petal p6"></span>
+        </div>
+        <div class="rose-base" aria-hidden="true"></div>
+        <div class="bloom-progress"><span id="bloomProgress"></span></div>
+        <p id="bloomText">0% bloom. Tap or scroll to grow it.</p>
+      </div>
+    </section>
+
+    <section class="section gallery-section" id="gallery" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">photo garden</div>
+          <h2>Reserved for Cinta's photos.</h2>
+        </div>
+        <p>These placeholders are designed to look intentional until the final photos are chosen.</p>
+      </div>
+      <div class="gallery-grid heart-layout" id="galleryGrid">
+        <button class="gallery-card heart-1" type="button" data-title="Foto Cinta 01" data-note="A future favorite photo of Cinta goes here.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 01</strong></span>
+        </button>
+        <button class="gallery-card heart-2" type="button" data-title="Foto Cinta 02" data-note="Maybe a soft selfie, maybe a cute candid.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 02</strong></span>
+        </button>
+        <button class="gallery-card heart-3" type="button" data-title="Foto Cinta 03" data-note="This card can become a memory tile later.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 03</strong></span>
+        </button>
+        <button class="gallery-card heart-center" type="button" data-title="Foto Cinta 04" data-note="A wide frame for a favorite screenshot or picture.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 04</strong></span>
+        </button>
+        <button class="gallery-card heart-5" type="button" data-title="Foto Cinta 05" data-note="Another space for her smile, style, or vibe.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 05</strong></span>
+        </button>
+        <button class="gallery-card heart-6" type="button" data-title="Foto Cinta 06" data-note="A tiny heart-shaped slot for another Cinta photo.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 06</strong></span>
+        </button>
+        <button class="gallery-card heart-7" type="button" data-title="Foto Cinta 07" data-note="Another placeholder that keeps the love-shaped garden balanced.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 07</strong></span>
+        </button>
+        <button class="gallery-card heart-8" type="button" data-title="Foto Cinta 08" data-note="The bottom point of the heart, waiting for a final photo.">
+          <span class="photo-placeholder"><span>♀</span><strong>Foto Cinta 08</strong></span>
+        </button>
+      </div>
+    </section>
+
+    <section class="section bouquet-section" id="bouquet" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">bouquet builder</div>
+          <h2>Rangkai buket virtual buat Cinta.</h2>
+        </div>
+        <p>Pilih sampai 6 bunga favorit, lalu ikat buketnya jadi hadiah kecil yang manis.</p>
+      </div>
+      <div class="bouquet-workbench">
+        <div class="bouquet-wrap" id="bouquetWrap">
+          <div class="bouquet-canvas" id="bouquetCanvas" aria-live="polite">
+            <span class="bouquet-glow" aria-hidden="true"></span>
+            <img class="bouquet-layer bouquet-back" src="./bouquet/bouquet-back.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <div class="selected-flower-layer" id="bouquetSlot"></div>
+            <img class="bouquet-layer bouquet-front" src="./bouquet/bouquet-front.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="bouquet-layer bouquet-ribbon" src="./bouquet/bouquet-ribbon.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          </div>
+          <div class="bouquet-status">
+            <p class="bouquet-note" id="bouquetNote">0/6 bunga dipilih.</p>
+            <p class="bouquet-warning" id="bouquetWarning" aria-live="polite"></p>
+          </div>
+        </div>
+        <aside class="flower-picker" aria-label="Flower picker">
+          <div class="flower-picker-head">
+            <span>flower picker</span>
+            <p>Pilih bunga yang mau masuk ke buket. Duplicate boleh, maksimal 6.</p>
+          </div>
+          <div class="flower-picker-grid" id="flowerPicker"></div>
+          <div class="bouquet-actions">
+            <button class="primary-cta" id="tieBouquet" type="button" disabled>Ikat Buket Bunga</button>
+            <button class="ghost-cta download-bouquet" id="downloadBouquet" type="button" hidden>Download Buket PNG</button>
+            <button class="ghost-cta reset-bouquet" id="resetBouquet" type="button" hidden>Buat Ulang Bouquet</button>
+          </div>
+        </aside>
+      </div>
+      <div class="bouquet-card" id="bouquetCard" aria-hidden="true">
+        <strong>Buket virtual Cinta sudah jadi.</strong>
+        <span>Dibuat khusus dari pilihan bunga favoritmu.</span>
+      </div>
+    </section>
+
+    <section class="section pov-section" id="pov" data-reveal>
+      <div class="polaroid-stack" aria-hidden="true">
+        <div class="mini-polaroid">
+          <span class="photo-window"></span>
+          <span class="polaroid-caption">Foto Cinta</span>
+        </div>
+        <div class="mini-polaroid me">
+          <span class="photo-window"></span>
+          <span class="polaroid-caption">POV aku</span>
+        </div>
+      </div>
+      <div class="section-text">
+        <div class="section-kicker">pov from me</div>
+        <h2>When the random DM stopped feeling random.</h2>
+        <div class="pov-bubbles">
+          <p>POV: aku cuma jawab santai...</p>
+          <p>terus lama-lama sadar, oh, this person feels different.</p>
+          <p>and now I am building a whole birthday universe for her.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section letter-section" id="letter" data-reveal>
+      <div class="section-kicker">open when ready</div>
+      <h2>A little letter for Cinta.</h2>
+      <div class="envelope-wrap">
+        <span class="letter-arrow" aria-hidden="true">tap here</span>
+        <button class="envelope" id="envelope" type="button" aria-expanded="false">
+          <span class="env-back"></span>
+          <span class="env-letter">
+            <strong>Dear Cinta,</strong>
+        <em id="letterFullText">
+          happy birthday. I hope this little website feels like a soft place made just for you.
+          We may not have our together photos yet, but I still wanted to make something that says:
+          your presence matters, your first hello mattered, and you are worth celebrating properly.
+          From Reyhan, the person who still thinks that first DM was ridiculously cute.
+        </em>
+      </span>
+          <span class="env-front"></span>
+          <span class="env-flap"></span>
+          <span class="env-seal">♡</span>
+        </button>
+        <button class="ghost-cta read-letter-cta" id="readLetter" type="button">Baca selengkapnya</button>
+        <p class="tap-hint">tap the envelope</p>
+      </div>
+    </section>
+
+    <section class="section future-section patch-notes-section" id="future" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">CINTA PATCH NOTES</div>
+          <h2>v19.07 birthday update</h2>
+          <p class="section-copy patch-subtitle">small updates, same pretty girl.</p>
+        </div>
+        <div class="carousel-controls">
+          <button type="button" id="prevPlan" aria-label="Previous future plan">‹</button>
+          <button type="button" id="nextPlan" aria-label="Next future plan">›</button>
+        </div>
+      </div>
+      <div class="carousel" id="futureCarousel" aria-live="polite">
+        <article class="plan-card is-current">
+          <span>v01</span>
+          <h3>Name update</h3>
+          <p>Cinta still has the prettiest name. no debate.</p>
+        </article>
+        <article class="plan-card">
+          <span>v02</span>
+          <h3>Flower preference</h3>
+          <p>Dahlia, Peony, and Rose are officially her flower lore.</p>
+        </article>
+        <article class="plan-card">
+          <span>v03</span>
+          <h3>Jealousyy mode</h3>
+          <p>still active. kinda cute. handle properly.</p>
+        </article>
+        <article class="plan-card">
+          <span>v04</span>
+          <h3>Soft side</h3>
+          <p>quietly warm. not loud, but it stays.</p>
+        </article>
+        <article class="plan-card">
+          <span>v05</span>
+          <h3>Reyhan bug report</h3>
+          <p>randomly missing her for no reason. still unresolved.</p>
+        </article>
+        <article class="plan-card">
+          <span>v06</span>
+          <h3>Birthday girl boost</h3>
+          <p>+100 pretty, +100 cute, +100 harus dimanja today.</p>
+        </article>
+      </div>
+      <div class="carousel-dots" id="carouselDots" aria-label="Carousel position"></div>
+    </section>
+
+    <section class="section scratch-section" id="scratch" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">scratch surprise</div>
+          <h2>Kartu gosok rahasia.</h2>
+        </div>
+        <p>Gosok lotre ini sayang, something's waiting 👀!</p>
+      </div>
+      <div class="scratch-card" id="scratchCard">
+        <div class="scratch-secret">
+          <span class="secret-badge">hidden lottery</span>
+          <h3>You found Rey's tiny note.</h3>
+          <p>Kalau ini kebuka, berarti kamu beneran explore webnya. Claim hadiah kecil: satu alasan lagi buat senyum hari ini.</p>
+          <div class="secret-photo"><span>Foto rahasia Cinta nanti</span></div>
+          <div class="secret-mini-note">bonus claim: one soft smile from Rey</div>
+        </div>
+        <canvas id="scratchCanvas" aria-label="Scratch layer"></canvas>
+        <div class="scratch-foil-burst" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="scratch-progress" aria-hidden="true"><span id="scratchProgress"></span></div>
+        <p class="scratch-hint">Gosok lotre ini sayang, something's waiting</p>
+      </div>
+    </section>
+
+    <section class="section fortune-section" id="fortune" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">promise chest</div>
+          <h2>Buka peti janji kecil dari Rey.</h2>
+        </div>
+        <p>Click the treasure chest sayang. There's like few promises yang bisa kamu claim :)</p>
+      </div>
+      <button class="treasure-chest fortune-cookie" id="fortuneCookie" type="button" aria-expanded="false">
+        <span class="treasure-stage" aria-hidden="true">
+          <span class="treasure-glow"></span>
+          <span class="treasure-shadow"></span>
+          <span class="treasure-lid">
+            <span class="treasure-lid-face"></span>
+            <span class="treasure-lid-trim"></span>
+          </span>
+          <span class="treasure-box">
+            <span class="treasure-panel"></span>
+            <span class="treasure-lock"></span>
+            <span class="treasure-pearls"><i></i><i></i><i></i></span>
+            <span class="treasure-gems"><i></i><i></i><i></i><i></i><i></i></span>
+          </span>
+          <span class="treasure-rays"><i></i><i></i><i></i><i></i></span>
+        </span>
+        <span class="fortune-paper" id="fortunePaper">Tap to reveal a promise.</span>
+      </button>
+      <button class="ghost-cta fortune-reset" id="fortuneReset" type="button">Buka janji lain</button>
+    </section>
+
+    <section class="section claw-machine-section" id="claw-machine" data-reveal>
+      <div class="section-heading-row">
+        <div>
+          <div class="section-kicker">virtual love claw</div>
+          <h2>Mesin Capit Hadiah</h2>
+        </div>
+        <p>Geser capitnya, ambil kapsulnya, lalu buka kupon romantisnya.</p>
+      </div>
+
+      <div class="claw-game" id="clawGame" data-phase="idle" style="--claw-x: 50%; --capsule-x: 50%;">
+        <div class="claw-machine" aria-label="Virtual Love Claw Machine">
+          <div class="machine-marquee">
+            <span>Love Arcade</span>
+            <strong><span class="script-word">Capit</span> <span>Cinta</span></strong>
+            <span>Prize Booth</span>
+          </div>
+          <div class="machine-window">
+            <div class="machine-shine" aria-hidden="true"></div>
+            <div class="claw-rail" aria-hidden="true"></div>
+            <div class="claw-unit" id="clawUnit" aria-hidden="true">
+              <span class="claw-cable"></span>
+              <span class="claw-head"></span>
+              <span class="claw-arm left"></span>
+              <span class="claw-arm right"></span>
+            </div>
+            <div class="plush-display" id="plushDisplay" aria-hidden="true"></div>
+            <div class="capsule-pit" id="capsulePit" aria-hidden="true"></div>
+            <span class="active-capsule" id="activeCapsule" aria-hidden="true"></span>
+            <div class="prize-chute" aria-hidden="true">
+              <span></span>
+              <strong>PRIZE</strong>
+            </div>
+          </div>
+          <div class="machine-base">
+            <span class="coin-slot"></span>
+            <span class="machine-bow">♡</span>
+            <span class="pearl-row" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          </div>
+        </div>
+
+        <aside class="claw-side">
+          <div class="claw-controls" aria-label="Claw machine controls">
+            <div>
+              <span class="control-kicker">controls</span>
+              <p id="clawStatus">Pilih posisi capitnya dulu.</p>
+            </div>
+            <div class="move-controls">
+              <button class="ghost-cta" id="clawLeft" type="button">Kiri</button>
+              <button class="ghost-cta" id="clawRight" type="button">Kanan</button>
+            </div>
+            <button class="claw-main-button" id="clawGrab" type="button">CAPIT!</button>
+            <button class="ghost-cta claw-prize-pool-button" id="clawPrizePoolOpen" type="button">Lihat prize pool boneka</button>
+          </div>
+
+          <div class="reward-reveal" id="rewardReveal" aria-hidden="true">
+            <div class="reward-popup-card" role="dialog" aria-modal="true" aria-labelledby="rewardTitle">
+              <button class="modal-close reward-close" id="rewardClose" type="button" aria-label="Tutup hadiah">×</button>
+              <div class="reveal-prize-media" id="rewardMedia"></div>
+              <span class="tier-badge" id="rewardTier">Sweet</span>
+              <h3 id="rewardTitle">Kamu dapat kupon!</h3>
+              <p id="rewardSubtitle"></p>
+              <p id="rewardDescription"></p>
+              <div class="reward-actions">
+                <button class="primary-cta" id="saveReward" type="button">Simpan ke Koleksi</button>
+                <button class="ghost-cta" id="playClawAgain" type="button">Main Lagi</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="claw-collection">
+            <div class="collection-panel">
+              <div class="collection-title">
+                <span>Koleksi Kupon</span>
+                <strong id="couponCount">0/10</strong>
+              </div>
+              <div class="collection-list" id="couponCollection">
+                <p class="empty-collection">Belum ada kupon yang kebuka. Coba capit satu kapsul dulu.</p>
+              </div>
+            </div>
+            <div class="collection-panel">
+              <div class="collection-title">
+                <span>Koleksi Boneka</span>
+                <strong id="plushCount">0/5</strong>
+              </div>
+              <div class="collection-list plush-list" id="plushCollection">
+                <p class="empty-collection">Belum ada boneka yang kebuka. Coba capit satu kapsul dulu.</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+        <div class="claw-prize-pool-modal" id="clawPrizePoolModal" aria-hidden="true" role="dialog" aria-labelledby="clawPrizePoolTitle">
+          <div class="claw-prize-pool-card">
+            <button class="modal-close" id="clawPrizePoolClose" type="button" aria-label="Tutup prize pool">×</button>
+            <div class="section-kicker">plush prize pool</div>
+            <h3 id="clawPrizePoolTitle">Boneka yang bisa kamu dapetin</h3>
+            <p>Ini cuma daftar boneka plush-nya. Kupon romantis tetap jadi surprise pas kapsul kebuka.</p>
+            <div class="claw-prize-pool-list" id="clawPrizePoolList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section candle-section" id="candle" data-reveal>
+      <div class="section-kicker">make a wish</div>
+      <h2>Tiup lilinnya dulu, honey.</h2>
+      <div class="cake-stage" id="cakeStage">
+        <div class="candles" aria-label="Blow out three birthday candles">
+          <button class="candle" type="button" aria-pressed="false" aria-label="Blow out candle 1" data-candle>
+            <span class="flame"></span>
+            <span class="wick"></span>
+            <span class="smoke smoke-1"></span>
+            <span class="smoke smoke-2"></span>
+          </button>
+          <button class="candle main-candle" type="button" aria-pressed="false" aria-label="Blow out candle 2" data-candle>
+            <span class="flame"></span>
+            <span class="wick"></span>
+            <span class="smoke smoke-1"></span>
+            <span class="smoke smoke-2"></span>
+          </button>
+          <button class="candle" type="button" aria-pressed="false" aria-label="Blow out candle 3" data-candle>
+            <span class="flame"></span>
+            <span class="wick"></span>
+            <span class="smoke smoke-1"></span>
+            <span class="smoke smoke-2"></span>
+          </button>
+        </div>
+        <div class="cake" aria-hidden="true">
+          <span class="cake-top"></span>
+          <span class="cake-cream"></span>
+          <span class="cake-base"></span>
+          <span class="cake-plate"></span>
+        </div>
+        <p class="wish-text" id="wishText">click the candle</p>
+        <button class="ghost-cta relight-cta" id="relightCandle" type="button">Nyalakan lagi lilinnya</button>
+      </div>
+    </section>
+
+    <section class="section certificate-section" id="certificate" data-reveal>
+      <div class="certificate-card" id="certificateCard">
+        <span class="cert-orbit" aria-hidden="true"></span>
+        <span class="cert-ribbon-corner left" aria-hidden="true"></span>
+        <span class="cert-ribbon-corner right" aria-hidden="true"></span>
+        <div class="cert-kicker">Official Birthday Pass</div>
+        <h2>Cinta Ayu Wulandari</h2>
+        <p class="cert-copy">This pass grants unlimited birthday wishes, soft compliments, future memories, and one very proud sender named Reyhan.</p>
+        <div class="cert-details">
+          <span>Birthday: 16 July</span>
+          <span>Issued by: Rey</span>
+          <span>Status: loved more than she knows</span>
+        </div>
+        <div class="cert-seal">♡</div>
+      </div>
+      <div class="certificate-actions">
+        <button class="primary-cta" id="downloadCertificate" type="button">Download pass</button>
+        <button class="ghost-cta" id="shareCertificate" type="button">Share text</button>
+      </div>
+    </section>
+
+    <section class="section date-invitation-section romance-flow-section" id="dateInvitation" data-reveal data-flow-stage="dateInvite">
+      <div class="romance-flow-shell date-flow-shell" id="dateFlowShell">
+        <div class="romance-flow-bg date-flow-bg" aria-hidden="true"></div>
+        <span class="flow-rose flow-rose-left" aria-hidden="true"></span>
+        <span class="flow-rose flow-rose-right" aria-hidden="true"></span>
+
+        <div class="romance-flow-panel date-invite-panel" id="dateInvitePanel" data-flow-panel="dateInvite">
+          <div class="section-kicker">one last question</div>
+          <h2 class="date-invite-title">Can we go <span class="date-script">on a date?</span></h2>
+          <p class="date-invite-copy">Will you, sayang?</p>
+          <p class="date-invite-softcopy">ngga usah pura-pura santai, aku emang berharap kamu pilih yes.</p>
+          <div class="date-answer-stack">
+            <button class="date-yes primary-cta" id="dateYes" type="button">YES! Mau banget &#129402;</button>
+            <button class="date-no ghost-cta" id="dateNo" type="button">GAK! PULANG SANAI</button>
+          </div>
+          <p class="date-attempt-note" id="dateAttemptNote" aria-live="polite">No button masih pede di situ.</p>
+        </div>
+
+        <div class="romance-flow-panel date-pass-panel" id="datePassPanel" data-flow-panel="datePass" hidden>
+          <div class="date-unlocked">DATE PASS UNLOCKED</div>
+          <h2 class="date-pass-title" aria-label="Pilih date kita, sayang♡">Pilih date kita, <span>sayang&#9825;</span></h2>
+          <p class="date-pass-subtitle">Setiap pilihan, cerita baru buat kita.</p>
+
+          <div class="date-pass-layout">
+            <figure class="date-pass-asset" aria-label="Official Date Pass">
+              <img src="./assets/date-flow/Datepass.png" srcset="./assets/date-flow/mobile/Datepass.webp 820w, ./assets/date-flow/Datepass.png 1448w" sizes="(max-width: 760px) 74vw, 520px" alt="Blank official date pass">
+              <figcaption>
+                <span>OFFICIAL DATE PASS</span>
+                <strong>Cinta</strong>
+                <small>Redeemable with Reyhan. Valid for one cute date, chosen by Cinta.</small>
+              </figcaption>
+            </figure>
+
+            <div class="date-pass-side">
+              <p class="date-picker-title">Pilih satu date yang paling kamu mau.</p>
+              <p class="date-picker-softcopy">pick the vibe, Rey handles the rest.</p>
+              <div class="date-type-picker" id="dateTypePicker" aria-label="Pilih tipe date">
+                <button class="date-option-card" type="button" data-date-type="Lunch/Dinner Date">
+                  <img class="date-option-thumb" src="./assets/date-flow/thumbnails/date-dinner.png" srcset="./assets/date-flow/thumbnails/mobile/date-dinner.webp 560w, ./assets/date-flow/thumbnails/date-dinner.png 1448w" sizes="(max-width: 760px) 42vw, 220px" alt="Lunch or dinner date thumbnail">
+                  <span class="date-option-label">Lunch/Dinner Date</span>
+                </button>
+                <button class="date-option-card" type="button" data-date-type="Photobox Date">
+                  <img class="date-option-thumb" src="./assets/date-flow/thumbnails/date-photobox.png" srcset="./assets/date-flow/thumbnails/mobile/date-photobox.webp 560w, ./assets/date-flow/thumbnails/date-photobox.png 1448w" sizes="(max-width: 760px) 42vw, 220px" alt="Photobox date thumbnail">
+                  <span class="date-option-label">Photobox Date</span>
+                </button>
+                <button class="date-option-card" type="button" data-date-type="Mall + Jajan Date">
+                  <img class="date-option-thumb" src="./assets/date-flow/thumbnails/date-mall-jajan.png" srcset="./assets/date-flow/thumbnails/mobile/date-mall-jajan.webp 560w, ./assets/date-flow/thumbnails/date-mall-jajan.png 1448w" sizes="(max-width: 760px) 42vw, 220px" alt="Mall and snack date thumbnail">
+                  <span class="date-option-label">Mall + Jajan Date</span>
+                </button>
+                <button class="date-option-card" type="button" data-date-type="Night Walk Date">
+                  <img class="date-option-thumb" src="./assets/date-flow/thumbnails/date-night-walk.png" srcset="./assets/date-flow/thumbnails/mobile/date-night-walk.webp 560w, ./assets/date-flow/thumbnails/date-night-walk.png 1448w" sizes="(max-width: 760px) 42vw, 220px" alt="Night walk date thumbnail">
+                  <span class="date-option-label">Night Walk Date</span>
+                </button>
+                <button class="date-option-card" type="button" data-date-type="Movie Date">
+                  <img class="date-option-thumb" src="./assets/date-flow/thumbnails/date-movie.png" srcset="./assets/date-flow/thumbnails/mobile/date-movie.webp 560w, ./assets/date-flow/thumbnails/date-movie.png 1448w" sizes="(max-width: 760px) 42vw, 220px" alt="Movie date thumbnail">
+                  <span class="date-option-label">Movie Date</span>
+                </button>
+                <button class="date-option-card" type="button" data-date-type="Request">
+                  <img class="date-option-thumb" src="./assets/date-flow/thumbnails/date-request.png" srcset="./assets/date-flow/thumbnails/mobile/date-request.webp 560w, ./assets/date-flow/thumbnails/date-request.png 1448w" sizes="(max-width: 760px) 42vw, 220px" alt="Custom request date thumbnail">
+                  <span class="date-option-label">Request</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="date-pass-panels">
+            <div class="mini-plan-panel date-mini-plan" id="dateMiniPlan" aria-live="polite">
+              <span>Mini Plan Unlocked</span>
+              <strong id="dateMiniPlanTitle">Pilih date card dulu.</strong>
+              <p id="dateMiniPlanText">Nanti Rey siapin mood-nya pelan-pelan.</p>
+            </div>
+            <div class="mini-plan-panel date-fun-panel" id="dateFunPanel" aria-live="polite">
+              <span>Tiny Date Mood</span>
+              <strong id="dateMoodText">waiting for Cinta's pick</strong>
+              <button class="ghost-cta" id="dateMoodButton" type="button">Roll date mood</button>
+            </div>
+          </div>
+          <div class="date-request-panel" id="dateRequestPanel" hidden>
+            <label for="dateRequestInput">custom request date</label>
+            <div class="date-request-row">
+              <input id="dateRequestInput" type="text" maxlength="80" placeholder="tulis request date kamu di sini">
+              <button class="ghost-cta" id="dateRequestButton" type="button">Kirim Date Request</button>
+            </div>
+          </div>
+          <p class="date-final-message" id="dateFinalMessage" aria-live="polite"></p>
+          <button class="primary-cta date-next-cta" id="dateNextButton" type="button" hidden>Lanjut</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section girlfriend-proposal-section romance-flow-section" id="girlfriendProposal" data-reveal hidden data-flow-stage="proposalSong">
+      <div class="romance-flow-shell proposal-flow-shell" id="proposalCard">
+        <div class="romance-flow-bg proposal-flow-bg" aria-hidden="true"></div>
+        <div class="proposal-petal-field reference-petal-layer" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="romance-flow-panel proposal-song-panel" id="proposalSongPanel" data-flow-panel="proposalSong">
+          <div class="section-kicker">Set the mood first</div>
+          <h2 class="proposal-song-title">Choose a <span>little vibe</span> first</h2>
+          <p class="proposal-song-copy">Pilih satu soundtrack dulu, abis itu baru scene kecil ini jalan.</p>
+          <div class="proposal-song-grid" id="proposalSongGrid" aria-label="Choose a song vibe">
+            <button class="proposal-song-card" type="button" data-proposal-song="drakor">
+              <strong>Drakor Vibes</strong>
+              <span>Soft, cinematic, a bit heart-fluttery</span>
+            </button>
+            <button class="proposal-song-card" type="button" data-proposal-song="soft">
+              <strong>Soft Vibes</strong>
+              <span>Gentle, warm, and lowkey intimate</span>
+            </button>
+            <button class="proposal-song-card" type="button" data-proposal-song="cute">
+              <strong>Cute Vibes</strong>
+              <span>Playful, sweet, and tiny bit giddy</span>
+            </button>
+          </div>
+          <div class="proposal-song-footer">
+            <p class="proposal-song-note" id="proposalSongNote">Choose one vibe dulu yaa.</p>
+            <button class="primary-cta proposal-song-start" id="proposalSongStart" type="button" disabled>Start this little scene</button>
+          </div>
+        </div>
+
+        <div class="romance-flow-panel proposal-intro" id="proposalIntro" data-flow-panel="proposalIntro" hidden>
+          <div class="section-kicker">One more thing, baby..</div>
+          <p class="proposal-line" id="proposalLine" aria-live="polite"></p>
+        </div>
+
+        <div class="romance-flow-panel proposal-question" id="proposalQuestion" data-flow-panel="proposalQuestion" hidden>
+          <div class="section-kicker">Girlfriend Proposal</div>
+          <h2>Can I officially call you my <span class="girlfriend-word">Girlfriend?</span></h2>
+          <div class="proposal-answer-row">
+            <button class="primary-cta" id="proposalYes" type="button">YESS!! I&#8217;d love to be your GIRLFRIEND &#129402;</button>
+            <button class="ghost-cta" id="proposalSoftNo" type="button">GAK!! maksudnya gak mau nolak</button>
+          </div>
+        </div>
+
+        <div class="romance-flow-panel proposal-confirm" id="proposalConfirm" data-flow-panel="proposalConfirm" hidden>
+          <div class="proposal-gif-row proposal-confirm-gifs" aria-hidden="true">
+            <img class="proposal-gif proposal-gif-side proposal-gif-left proposal-gif-sappy" src="./assets/proposal/cat-cuddle-right.gif" alt="">
+            <img class="proposal-gif proposal-gif-top proposal-gif-center" src="./assets/proposal/wow-excited.gif" alt="">
+            <img class="proposal-gif proposal-gif-side proposal-gif-right proposal-gif-excited" src="./assets/proposal/cat-cheer-left.gif" alt="">
+          </div>
+          <p class="proposal-confirm-copy">BENERAN YAA?! cause after this, i&#8217;m gonna be annoyingly proud about it 😝</p>
+          <button class="primary-cta proposal-confirm-cta" id="proposalConfirmButton" type="button">okaaay, make it official</button>
+        </div>
+
+        <div class="romance-flow-panel ring-reveal ring-stage-card" id="ringReveal" data-flow-panel="ringClosed" hidden>
+          <p class="ring-instruction">Open the little box</p>
+          <h2 class="ring-secret-title">Would u like to open this secret box?</h2>
+          <p class="ring-helper" id="ringHelper">tap box-nya pelan dulu. jangan buru-buru, ini bagian dramatisnya.</p>
+          <button class="ring-box-button" id="ringBoxButton" type="button" aria-label="Open the little promise ring box">
+            <img class="ring-box-img ring-box-closed" src="./assets/proposal/ringbox-close.png" srcset="./assets/proposal/mobile/ringbox-close.webp 720w, ./assets/proposal/ringbox-close.png 1254w" sizes="(max-width: 760px) 68vw, 380px" alt="Closed heart ring box">
+          </button>
+        </div>
+
+        <div class="romance-flow-panel ring-reveal ring-stage-card" id="ringOpenPanel" data-flow-panel="ringOpen" hidden>
+          <p class="ring-instruction">A tiny promise, opened.</p>
+          <p class="ring-helper">tap once more buat lihat ring-nya. it’s hiding on purpose.</p>
+          <button class="ring-box-button ring-box-open-button" id="ringOpenContinue" type="button" aria-label="Show the promise ring">
+            <span class="ring-open-stage-glow" aria-hidden="true"></span>
+            <img class="ring-box-img ring-box-open" src="./assets/proposal/ringbox-open.png" srcset="./assets/proposal/mobile/ringbox-open.webp 720w, ./assets/proposal/ringbox-open.png 1254w" sizes="(max-width: 760px) 68vw, 380px" alt="Opened heart ring box">
+            <img class="promise-ring-img proposal-ring-float" src="./assets/proposal/ring.png" srcset="./assets/proposal/mobile/ring.webp 720w, ./assets/proposal/ring.png 1254w" sizes="(max-width: 760px) 40vw, 180px" alt="Pink heart promise ring floating above the box">
+            <span class="ring-sparkles" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+        </div>
+
+        <div class="romance-flow-panel ring-closeup-panel ring-stage-card" id="ringCloseupPanel" data-flow-panel="ringCloseup" hidden>
+          <div class="section-kicker">Just one more thing...</div>
+          <h2 class="ring-closeup-title">Aku ada tiny <span>promise</span> buat kamu.</h2>
+          <p class="ring-closeup-copy">not a huge speech. just one soft promise i want to keep choosing.</p>
+          <img class="promise-ring-img promise-ring-closeup" src="./assets/proposal/ring.png" srcset="./assets/proposal/mobile/ring.webp 720w, ./assets/proposal/ring.png 1254w" sizes="(max-width: 760px) 58vw, 260px" alt="Pink heart promise ring">
+          <button class="primary-cta claim-ring-cta" id="claimRingButton" type="button">Claim the promise ring</button>
+        </div>
+
+        <div class="romance-flow-panel final-official-panel" id="finalOfficialPanel" data-flow-panel="finalOfficial" hidden>
+          <div class="section-kicker">official</div>
+          <div class="proposal-gif-row official-gif-row" aria-hidden="true">
+            <img class="proposal-gif official-gif official-gif-left" src="./assets/proposal/wow-excited.gif" alt="">
+            <img class="proposal-gif official-gif official-gif-center" src="./assets/proposal/cat-cuddle-right.gif" alt="">
+            <img class="proposal-gif official-gif official-gif-right" src="./assets/proposal/cat-cheer-left.gif" alt="">
+          </div>
+          <p class="proposal-official" id="proposalOfficial">then it&#8217;s official. you&#8217;re my girlfriend now :)</p>
+          <button class="ghost-cta replay-proposal-cta" id="replayProposalFlow" type="button">Play this proposal scene again</button>
+          <span class="proposal-heart-glow" aria-hidden="true">&#9829;</span>
+        </div>
+      </div>
+    </section>
+    <section class="section finale-section" id="finale" data-reveal>
+      <div class="final-card">
+        <span class="final-photo-bg" aria-hidden="true"></span>
+        <div class="final-stickers" aria-hidden="true">
+          <span>🎀</span><span>♡</span><span>✦</span>
+        </div>
+        <div class="section-kicker">final surprise</div>
+        <h2>Happy Birthday!</h2>
+        <p>You are loved more than you know. From Reyhan, the person who still remembers the first random DM.</p>
+        <div class="final-actions">
+          <button class="primary-cta" id="celebrateButton" type="button">Celebrate</button>
+          <button class="ghost-cta" id="replayGift" type="button">Replay the gift</button>
+        </div>
+        <button class="reply-cta" id="sendReply" type="button">Kirim Pelukan Balik ke Reyhan ❤️</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="gallery-modal" id="galleryModal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose" type="button" aria-label="Close photo detail">×</button>
+      <div class="photo-placeholder modal-photo"><span>♀</span><strong id="modalTitle">Foto Cinta</strong></div>
+      <p id="modalNote"></p>
+    </div>
+  </div>
+
+  <div class="letter-modal" id="letterModal" aria-hidden="true" role="dialog" aria-labelledby="letterModalTitle">
+    <div class="letter-modal-card">
+      <button class="modal-close" id="letterModalClose" type="button" aria-label="Close letter preview">×</button>
+      <span class="paper-texture" aria-hidden="true"></span>
+      <strong id="letterModalTitle">Dear Cinta,</strong>
+      <p>
+        happy birthday. I hope this little website feels like a soft place made just for you.
+        We may not have our together photos yet, but I still wanted to make something that says:
+        your presence matters, your first hello mattered, and you are worth celebrating properly.
+        From Reyhan, the person who still thinks that first DM was ridiculously cute.
+      </p>
+    </div>
+  </div>
+
+  <script src="./app.js?v=proposal-v14"></script>
+</body>
+</html>
