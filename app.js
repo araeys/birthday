@@ -1,3 +1,10 @@
+function safeClosest(el, selector) {
+  if (!el) return null;
+  const target = el.nodeType === 1 ? el : el.parentElement;
+  if (!target || typeof target.closest !== 'function') return null;
+  return target.closest(selector);
+}
+
 ﻿const config = {
   fullName: "Cinta Ayu Wulandari",
   senderName: "Reyhan",
@@ -440,8 +447,8 @@ function initPasscodeGate() {
   };
 
   gate.addEventListener("click", (event) => {
-    const digitButton = event.target.closest?.("[data-pass-digit]");
-    const actionButton = event.target.closest?.("[data-pass-action]");
+    const digitButton = safeClosest(event.target, "[data-pass-digit]");
+    const actionButton = safeClosest(event.target, "[data-pass-action]");
     if (digitButton) {
       pushDigit(digitButton.dataset.passDigit || "");
       return;
@@ -730,13 +737,13 @@ function playConfettiAudioPair() {
 
 function initGlobalButtonAudio() {
   document.addEventListener("click", (event) => {
-    const mutedTarget = event.target.closest?.("[data-no-button-sound='true']");
-    const disabledTarget = event.target.closest?.("button:disabled, [aria-disabled='true']");
+    const mutedTarget = safeClosest(event.target, "[data-no-button-sound='true']");
+    const disabledTarget = safeClosest(event.target, "button:disabled, [aria-disabled='true']");
     if (mutedTarget || disabledTarget) return;
 
     playButtonPressSfx();
 
-    const target = event.target.closest?.([
+    const target = safeClosest(event.target, [
       "button",
       "a",
       "[role='button']",
@@ -750,7 +757,7 @@ function initGlobalButtonAudio() {
     ].join(","));
     if (!target) return;
     const button = target.matches("button") ? target : null;
-    if (!button || button.closest?.("#musicToggle, #tonearm, .vinyl-player")) return;
+    if (!button || safeClosest(button, "#musicToggle, #tonearm, .vinyl-player")) return;
     if (reducedMotion) return;
     const rect = button.getBoundingClientRect();
     const ripple = document.createElement("span");
@@ -3464,7 +3471,7 @@ function initFeatureApp() {
   }
 
   grid.addEventListener("click", (event) => {
-    const button = event.target.closest?.("[data-feature-target]");
+    const button = safeClosest(event.target, "[data-feature-target]");
     if (!button) return;
     activateFeature(button.dataset.featureTarget || "");
   });
@@ -3897,7 +3904,7 @@ document.addEventListener("DOMContentLoaded", init);
   // app's usual click SFX (button-click.mp3). No ambient synth "pop" here.
 
   document.addEventListener("click", (event) => {
-    const target = event.target.closest?.("button, img.promise-ring-closeup");
+    const target = safeClosest(event.target, "button, img.promise-ring-closeup");
     if (!target) return;
     const id = target.id;
     const isHandled = id === "dateYes" || id === "dateNo" || id === "dateNextButton" || id === "dateRequestButton" || id === "proposalSongStart" || id === "proposalYes" || id === "proposalSoftNo" || id === "proposalConfirmButton" || id === "ringBoxButton" || id === "ringOpenContinue" || id === "claimRingButton" || id === "replayProposalFlow" || target.matches(".date-option-card") || target.matches(".proposal-song-card") || target.matches("img.promise-ring-closeup");
