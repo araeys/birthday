@@ -4970,8 +4970,29 @@ select {
 
 /* SAME ROOT CAUSE — the promise chest's glow + light rays live outside
    the button box (treasure-chest === fortune-cookie, one element). */
-.treasure-chest {
+.treasure-chest,
+.fortune-section .treasure-chest {
   overflow: visible !important;
+}
+
+@keyframes smootherLidOpen {
+  0% { transform: translate(-50%, -50%) rotateX(0) translateY(0); }
+  52% { transform: translate(-50%, -64%) rotateX(-76deg) translateY(-44px); }
+  100% { transform: translate(-50%, -61%) rotateX(-68deg) translateY(-38px); }
+}
+
+@keyframes smootherPaperRise {
+  0% { opacity: 0; transform: translateX(-50%) translateY(44px) scale(.72) rotate(2deg); }
+  58% { opacity: 1; transform: translateX(-50%) translateY(-170px) scale(1.03) rotate(-2deg); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(-156px) scale(1) rotate(-1deg); filter: drop-shadow(0 0 25px rgba(255, 183, 213, 0.4)); }
+}
+
+.treasure-chest.is-open .treasure-lid {
+  animation: smootherLidOpen 0.9s cubic-bezier(0.16, 1.08, 0.28, 1) both !important;
+}
+
+.treasure-chest.is-open .fortune-paper {
+  animation: smootherPaperRise 0.9s cubic-bezier(0.16, 1.08, 0.26, 1) both !important;
 }
 
 /* =====================================================================
@@ -5252,12 +5273,38 @@ select {
 }
 
 /* 4. Text & Typography Glows */
-.section h2, .date-invite-title, .proposal-question h2, .final-card h2 {
+@keyframes finalSurpriseTextGlow {
+  0%, 100% { text-shadow: 0 0 15px rgba(255, 188, 222, 0.4), 0 0 35px rgba(255, 188, 222, 0.2), 0 0 50px rgba(255, 188, 222, 0.1); filter: brightness(1); }
+  50% { text-shadow: 0 0 25px rgba(255, 188, 222, 0.8), 0 0 50px rgba(255, 188, 222, 0.5), 0 0 80px rgba(255, 188, 222, 0.3); filter: brightness(1.15); }
+}
+
+.section h2, .date-invite-title, .proposal-question h2 {
   transition: text-shadow 0.4s ease !important;
+}
+
+.final-card h2 {
+  animation: finalSurpriseTextGlow 3s ease-in-out infinite !important;
+  color: #ffc4e1 !important; /* Slightly brighter base pink */
+  font-family: var(--script) !important; /* Explicitly enforce cutesy script for finale */
+  font-size: clamp(68px, 12vw, 140px) !important; /* Make it slightly larger */
 }
 
 .section h2:hover, .date-invite-title:hover, .proposal-question h2:hover {
   text-shadow: 0 0 45px rgba(255, 183, 213, 0.5), 0 15px 45px rgba(0, 0, 0, 0.4) !important;
+}
+
+.final-card {
+  border-radius: 40px !important;
+  border: 2px solid rgba(255, 206, 229, 0.3) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,183,213,.25), transparent 50%),
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)) !important;
+  box-shadow: 0 40px 100px rgba(255, 111, 174, 0.2), inset 0 2px 15px rgba(255, 255, 255, 0.3) !important;
+}
+
+.final-stickers span {
+  animation: stickerLoop 3s ease-in-out infinite !important;
+  filter: drop-shadow(0 5px 10px rgba(255, 111, 174, 0.4)) !important;
 }
 
 .flip-line {
@@ -5352,38 +5399,49 @@ button:active, .primary-cta:active, .ghost-cta:active {
 }
 
 
-/* 2. CLAW MACHINE MASSIVE UPGRADE */
+/* 2. CLAW MACHINE MASSIVE UPGRADE (CUTSEY AESTHETIC) */
 @keyframes neonArcadePulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(255, 117, 179, 0.3), inset 0 0 10px rgba(255, 183, 213, 0.1); border-color: rgba(255, 117, 179, 0.4); }
-  50% { box-shadow: 0 0 50px rgba(255, 117, 179, 0.8), inset 0 0 30px rgba(255, 183, 213, 0.5); border-color: rgba(255, 183, 213, 1); }
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 183, 213, 0.4), inset 0 0 15px rgba(255, 183, 213, 0.2); border-color: rgba(255, 183, 213, 0.5); }
+  50% { box-shadow: 0 0 45px rgba(255, 183, 213, 0.8), inset 0 0 25px rgba(255, 183, 213, 0.4); border-color: rgba(255, 183, 213, 0.9); }
 }
 
 .claw-machine {
-  animation: neonArcadePulse 2s ease-in-out infinite !important;
-  backdrop-filter: blur(25px) saturate(1.5) !important;
+  animation: neonArcadePulse 3s ease-in-out infinite !important;
+  backdrop-filter: blur(20px) saturate(1.2) !important;
   border-radius: 40px !important;
+  background: linear-gradient(160deg, rgba(255, 183, 213, 0.1), rgba(30, 10, 20, 0.8)) !important;
 }
 
 .claw-unit {
-  transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s ease !important;
-  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 183, 213, 0.8)) !important;
+  transition: left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease !important;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 15px rgba(255, 183, 213, 0.6)) !important;
 }
 
 .claw-controls button {
-  font-weight: 800 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
+  font-family: var(--sans) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 20px !important;
 }
 
 .claw-main-button {
-  background: linear-gradient(135deg, #ff4d94, #b92f72) !important;
-  border: 3px solid #ff9bc9 !important;
-  animation: gentleFloatCard 3s ease-in-out infinite !important;
+  background: linear-gradient(135deg, #ff9cc8, #ff6fae) !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  color: #fff !important;
+  text-shadow: 0 2px 4px rgba(255, 78, 157, 0.4) !important;
+  box-shadow: 0 10px 25px rgba(255, 111, 174, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.5) !important;
+  animation: none !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, filter 0.3s ease !important;
 }
 
 .claw-main-button:hover {
-  transform: translateY(-8px) scale(1.1) rotate(2deg) !important;
-  box-shadow: 0 0 60px rgba(255, 77, 148, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.6) !important;
+  transform: translateY(-4px) scale(1.04) !important;
+  box-shadow: 0 20px 40px rgba(255, 111, 174, 0.6), 0 0 20px rgba(255, 183, 213, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.6) !important;
+  filter: brightness(1.05) !important;
+}
+
+.claw-main-button:active {
+  transform: translateY(2px) scale(0.96) !important;
 }
 
 .plush-prize-card {
@@ -5447,4 +5505,86 @@ button:active, .primary-cta:active, .ghost-cta:active {
 
 .gift-box.is-opening .head-pop {
   animation: headExplosivePop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+
+/* =====================================================================
+   DM SPAM SEQUENCE STYLES
+   ===================================================================== */
+.spam-chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+}
+
+.spam-chat-container.is-active {
+  max-height: 400px; /* Expand to show some spam */
+}
+
+.spam-chat-container .chat-bubble {
+  animation: spamScrollUp 0.3s linear forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes spamScrollUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  50% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(-5px); } /* Slight upward momentum */
+}
+
+.final-love-msg {
+  font-size: 1.2em !important;
+  font-weight: 700 !important;
+  color: #ff9cc8 !important;
+  background: rgba(30, 10, 20, 0.9) !important;
+  border: 1px solid rgba(255, 117, 179, 0.5) !important;
+  box-shadow: 0 0 30px rgba(255, 117, 179, 0.4), inset 0 0 10px rgba(255, 117, 179, 0.2) !important;
+  transform: scale(1.1) !important;
+  margin-top: 24px !important;
+  animation: loveMsgPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+  opacity: 0;
+}
+
+@keyframes loveMsgPop {
+  0% { opacity: 0; transform: scale(0.8) translateY(20px); filter: blur(10px); }
+  60% { opacity: 1; transform: scale(1.15) translateY(-5px); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1.1) translateY(0); }
+}
+
+.dramatic-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 2, 6, 0.95);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: cinematicFadeIn 1s ease forwards;
+}
+
+.dramatic-popup-content {
+  font-family: var(--serif) !important;
+  font-size: clamp(32px, 6vw, 64px);
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 0 40px rgba(255, 183, 213, 0.6);
+  opacity: 0;
+  transform: scale(0.95);
+  animation: cinematicTextReveal 2s cubic-bezier(0.2, 0.9, 0.3, 1) 0.5s forwards;
+}
+
+@keyframes cinematicFadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes cinematicTextReveal {
+  0% { opacity: 0; transform: scale(0.95) translateY(20px); filter: blur(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
 }
