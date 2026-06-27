@@ -1003,6 +1003,24 @@ function resetChatSequence() {
   clearChatTimers();
   qsa('[data-chat-step]').forEach((item) => item.classList.remove("is-in"));
   qs("#chatStage")?.classList.remove("is-sequencing");
+
+  // Reset spam sequence elements
+  const spamContainer = qs("#spamChatContainer");
+  const finalMsg = qs("#finalLoveMsg");
+  const overlay = qs("#dramaticPopupOverlay");
+
+  if (spamContainer) {
+    spamContainer.innerHTML = "";
+    spamContainer.classList.remove("is-active");
+    spamContainer.hidden = true;
+  }
+  if (finalMsg) {
+    finalMsg.classList.remove("is-in");
+    finalMsg.hidden = true;
+  }
+  if (overlay) {
+    overlay.hidden = true;
+  }
 }
 
 function runChatSequence(options = {}) {
@@ -1035,8 +1053,67 @@ function runChatSequence(options = {}) {
   queueChatTimer(() => {
     second?.classList.add("is-in");
     if (shouldPlaySfx) playSent2Sfx();
-    qs("#chatStage")?.classList.remove("is-sequencing");
   }, 3260);
+
+  // --- NEW SPAM SEQUENCE ---
+  const spamContainer = qs("#spamChatContainer");
+  const finalMsg = qs("#finalLoveMsg");
+  const overlay = qs("#dramaticPopupOverlay");
+
+  if (spamContainer && finalMsg && overlay) {
+    const spamMessages = [
+      "kangen", "cintaa", "lagi apa?", "jangan lupa makan",
+      "miss you", "pengen peluk", "cintaawlndr", "sayangku",
+      "cantik banget sih", "i miss you so much", "cintaa"
+    ];
+
+    queueChatTimer(() => {
+      spamContainer.hidden = false;
+      spamContainer.classList.add("is-active");
+
+      let delay = 0;
+      spamMessages.forEach((msg, index) => {
+        queueChatTimer(() => {
+          const bubble = document.createElement("div");
+          bubble.className = "chat-bubble me";
+          bubble.innerHTML = `<p>${msg}</p>`;
+          spamContainer.appendChild(bubble);
+          // Auto-scroll to bottom of chat stage
+          const stage = qs("#chatStage");
+          if (stage) stage.scrollTop = stage.scrollHeight;
+          if (shouldPlaySfx) playTypingSfx(50); // fast typing sfx for spam
+        }, delay);
+        delay += 150; // fast interval
+      });
+
+      // After spam finishes, show final message
+      queueChatTimer(() => {
+        finalMsg.hidden = false;
+        finalMsg.classList.add("is-in");
+        if (shouldPlaySfx) safeSfx("playSuccessSfx"); // emphatic sound
+
+        // Auto-scroll again
+        const stage = qs("#chatStage");
+        if (stage) stage.scrollTop = stage.scrollHeight;
+
+        // Then trigger dramatic popup
+        queueChatTimer(() => {
+          overlay.hidden = false;
+          // Click anywhere to dismiss overlay
+          overlay.addEventListener("click", () => {
+            overlay.hidden = true;
+            qs("#chatStage")?.classList.remove("is-sequencing");
+          }, { once: true });
+        }, 1500);
+
+      }, delay + 500);
+
+    }, 4200); // Start spam shortly after second message
+  } else {
+    queueChatTimer(() => {
+      qs("#chatStage")?.classList.remove("is-sequencing");
+    }, 3260);
+  }
 }
 
 function initChatReplay() {
@@ -3067,7 +3144,7 @@ function initClawMachine() {
     selectedIndex = nextIndex;
     updateClawX();
     setPhase("moving");
-    await wait(260);
+    await wait(400); // Increased wait time to match smoother CSS transition
     setPhase("idle");
   }
 
@@ -3081,15 +3158,15 @@ function initClawMachine() {
     updateClawX();
 
     setPhase("dropping");
-    await wait(620);
+    await wait(800); // Smoother drop
     setPhase("grabbing");
     playChatPopSfx();
-    await wait(420);
+    await wait(500); // Smoother grab
     setPhase("lifting");
-    await wait(620);
+    await wait(800); // Smoother lift
     setPhase("toChute");
     game.style.setProperty("--claw-x", "84%");
-    await wait(680);
+    await wait(800); // Smoother move to chute
     setPhase("droppingPrize");
     await wait(420);
     setPhase("rolling");

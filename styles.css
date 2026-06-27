@@ -10825,14 +10825,7 @@ button {
 }
 
 .gift-head-glow {
-  position: absolute;
-  inset: 24px;
-  z-index: 1;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(255,183,213,.58), transparent 68%);
-  filter: blur(20px);
-  animation: giftHeadGlow 1.8s ease-in-out infinite;
-  pointer-events: none;
+  display: none !important; /* Removed artificial background glow */
 }
 
 .gift-box.is-opening .head-pop {
@@ -13980,7 +13973,7 @@ body.is-passcode-locked .gift-gate {
 }
 
 .gift-head-glow {
-  inset: 16%;
+  display: none !important; /* Removed artificial background glow */
 }
 
 #openGiftText {
@@ -14370,13 +14363,7 @@ body.is-passcode-locked .gift-gate {
 }
 
 .gift-head-glow {
-  inset: 9%;
-  border-radius: 40px;
-  background:
-    radial-gradient(circle at 50% 42%, rgba(255, 231, 244, .58), transparent 36%),
-    radial-gradient(circle at 50% 58%, rgba(255, 95, 166, .34), transparent 62%);
-  filter: blur(16px);
-  opacity: .72;
+  display: none !important; /* Removed artificial background glow */
 }
 
 .gift-orbit {
