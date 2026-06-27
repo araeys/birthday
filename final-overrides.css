@@ -1288,13 +1288,7 @@ body.claw-prize-pool-open {
 }
 
 .ring-box-button::before {
-  content: "";
-  position: absolute;
-  inset: 18%;
-  z-index: -1;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(255, 183, 213, .32), rgba(231, 197, 109, .12) 42%, transparent 70%);
-  animation: promiseRingGlow 4s ease-in-out infinite;
+  display: none !important; /* Removed artificial background glow */
 }
 
 .ring-box-img,
@@ -1303,6 +1297,7 @@ body.claw-prize-pool-open {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(255, 183, 213, 0.4)); /* Glow follows actual asset shape */
 }
 
 .ring-box-open-button .ring-box-open {
@@ -2460,18 +2455,7 @@ body.claw-prize-pool-open {
 }
 
 .ring-stage-card::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: -1;
-  width: min(560px, 82vw);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 160, 204, .2), rgba(231, 197, 109, .09) 38%, transparent 68%);
-  transform: translate(-50%, -50%);
-  filter: blur(2px);
-  animation: promiseRingGlow 4s ease-in-out infinite;
+  display: none !important; /* Removed artificial background glow */
 }
 
 .ring-box-button {
@@ -2878,14 +2862,7 @@ body.claw-prize-pool-open {
 }
 
 .ring-open-stage-glow {
-  position: absolute;
-  inset: 24% 18%;
-  z-index: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,202,226,.32), rgba(255,202,226,.06) 48%, transparent 68%);
-  filter: blur(8px);
-  opacity: .72;
-  animation: ringStageGlow 3.2s ease-in-out infinite;
+  display: none !important; /* Removed artificial background glow */
 }
 
 .ring-box-open-button .ring-box-open {
@@ -3339,14 +3316,7 @@ body.claw-prize-pool-open {
 }
 
 .ring-stage-card::before {
-  content: "";
-  position: absolute;
-  inset: 14% 18% auto;
-  height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,173,214,.16), rgba(255,173,214,0) 72%);
-  filter: blur(16px);
-  pointer-events: none;
+  display: none !important; /* Removed artificial background glow */
 }
 
 .ring-box-open-button,
@@ -3942,8 +3912,7 @@ body.claw-prize-pool-open {
 }
 
 #ringOpenContinue .ring-open-stage-glow {
-  opacity: .72;
-  filter: blur(18px);
+  display: none !important; /* Removed artificial background glow */
 }
 
 #ringCloseupPanel .promise-ring-closeup {
